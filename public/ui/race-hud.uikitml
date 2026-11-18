@@ -1,11 +1,11 @@
 <style>
   .hud-root {
     flex-direction: column;
-    width: 320;
-    padding-top: 18;
-    padding-right: 20;
-    padding-bottom: 18;
-    padding-left: 20;
+    width: 320px;
+    padding-top: 18px;
+    padding-right: 20px;
+    padding-bottom: 18px;
+    padding-left: 20px;
     background-color: #101b22;
     border-color: #6fd2e0;
     border-width: 2;
@@ -13,35 +13,35 @@
   }
   .eyebrow {
     color: #c4f36a;
-    font-size: 12;
+    font-size: 12px;
     font-weight: 700;
   }
   .speed-row {
     flex-direction: row;
     align-items: baseline;
-    gap: 8;
-    margin-top: 6;
+    gap: 8px;
+    margin-top: 6px;
   }
   .speed {
     color: #f4f6ef;
-    font-size: 44;
+    font-size: 44px;
     font-weight: 700;
   }
   .unit {
     color: #8da2a6;
-    font-size: 14;
+    font-size: 14px;
   }
   .stats {
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 8;
-    padding-top: 10;
+    margin-top: 8px;
+    padding-top: 10px;
     border-color: #2f4650;
     border-width: 1;
   }
   .stat {
     flex-direction: column;
-    gap: 3;
+    gap: 3px;
   }
   .label {
     color: #9eb0b0;
@@ -55,18 +55,18 @@
   }
   .room {
     color: #6fd2e0;
-    font-size: 12;
+    font-size: 12px;
     font-weight: 700;
-    margin-top: 10;
+    margin-top: 10px;
   }
   .message {
     color: #d7e3dc;
-    font-size: 12;
-    margin-top: 4;
+    font-size: 12px;
+    margin-top: 4px;
   }
 </style>
 <Panel class="hud-root">
-  <div class="eyebrow">TRAIL RUSH · ALPINE LOOP</div>
+  <div class="eyebrow">TRAIL RUSH / ALPINE LOOP</div>
   <div class="speed-row">
     <div id="speed" class="speed">0</div>
     <div class="unit">KM/H</div>

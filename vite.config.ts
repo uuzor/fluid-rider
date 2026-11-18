@@ -32,6 +32,7 @@ process.env.IWSDK_DEV_OPEN ??= 'false';
 const port = Number.parseInt(process.env.PORT ?? '', 10) || 5173;
 
 export default defineConfig({
+  envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
   plugins: [iwsdkDev({ https: devHttps })],
   server: {
     host: '0.0.0.0',

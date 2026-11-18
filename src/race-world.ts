@@ -74,9 +74,9 @@ export class RaceWorldSystem extends createSystem({
       } else if (object.position.z < -46) {
         object.position.z = -8;
       }
-      const rivalLane = entity.getValue(RaceRival, 'lane');
+      const rivalLane = entity.getValue(RaceRival, 'lane') ?? 0;
       object.position.x = rivalLane * 2 - this.lane * 1.25;
-      const stunnedUntil = entity.getValue(RaceRival, 'stunnedUntil');
+      const stunnedUntil = entity.getValue(RaceRival, 'stunnedUntil') ?? 0;
       object.rotation.z = stunnedUntil > time ? Math.sin(time * 16) * 0.13 : 0;
       entity.setValue(RaceRival, 'distance', this.distance + Math.max(0, -object.position.z) * 0.6);
     }
@@ -90,24 +90,23 @@ export class RaceWorldSystem extends createSystem({
   private async setupWorld(): Promise<void> {
     for (let index = 0; index < SEGMENT_COUNT; index += 1) {
       const segment = await this.world.assets.instantiate<Group>('race-course');
+      segment.position.set(0, 0, -index * SEGMENT_LENGTH);
       const entity = this.world.createTransformEntity(segment);
       entity.addComponent(TrackSegment, { length: SEGMENT_LENGTH, index });
-      segment.position.set(0, 0, -index * SEGMENT_LENGTH);
     }
 
     const cockpit = await this.world.assets.instantiate<Group>('bike-cockpit');
-    const cockpitEntity = this.world.createTransformEntity(cockpit, this.world.cameraEntity);
     cockpit.position.set(0, -0.48, -0.72);
     cockpit.scale.setScalar(0.78);
-    cockpitEntity.object3D?.updateMatrix();
+    this.world.createTransformEntity(cockpit, this.world.cameraEntity);
 
     for (let slot = 0; slot < 3; slot += 1) {
       const token = await this.world.assets.instantiate<Group>('boost-token');
+      token.position.set([-1.4, 0.9, 1.4][slot], 1.18, -12 - slot * 11);
       const entity = this.world.createTransformEntity(token);
       entity.addComponent(RacePickup, { slot, collected: false, respawnAt: 0 });
       entity.addComponent(RayInteractable, {});
       entity.addComponent(OneHandGrabbable, {});
-      token.position.set([-1.4, 0.9, 1.4][slot], 1.18, -12 - slot * 11);
     }
 
     await this.addBot('bot-summit', 'Summit', -1, -15);
@@ -116,6 +115,9 @@ export class RaceWorldSystem extends createSystem({
 
   private async addBot(playerId: string, displayName: string, lane: number, z: number): Promise<void> {
     const rider = await this.world.assets.instantiate<Group>('race-cyclist');
+    rider.position.set(lane * 2, 0, z);
+    rider.rotation.y = Math.PI;
+    rider.scale.setScalar(0.78);
     const entity = this.world.createTransformEntity(rider);
     entity.addComponent(RaceRival, {
       playerId,
@@ -125,9 +127,6 @@ export class RaceWorldSystem extends createSystem({
       distance: 0,
       stunnedUntil: 0,
     });
-    rider.position.set(lane * 2, 0, z);
-    rider.rotation.y = Math.PI;
-    rider.scale.setScalar(0.78);
   }
 }
 

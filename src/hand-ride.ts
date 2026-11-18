@@ -80,7 +80,7 @@ export class HandRideSystem extends createSystem({}) {
     this.filteredSteer += (steerInput - this.filteredSteer) * smoothing;
     this.state.handsReady = true;
 
-    if (this.input.xr.gamepads.left?.getButtonDown(InputComponent.Trigger)) {
+    if (this.input.xr.gamepads.left?.getButtonDown(InputComponent.Squeeze)) {
       this.state.fireRequested = true;
     }
     this.applyControls();
