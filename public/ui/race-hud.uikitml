@@ -1,0 +1,90 @@
+<style>
+  .hud-root {
+    flex-direction: column;
+    width: 320;
+    padding-top: 18;
+    padding-right: 20;
+    padding-bottom: 18;
+    padding-left: 20;
+    background-color: #101b22;
+    border-color: #6fd2e0;
+    border-width: 2;
+    border-radius: 18;
+  }
+  .eyebrow {
+    color: #c4f36a;
+    font-size: 12;
+    font-weight: 700;
+  }
+  .speed-row {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8;
+    margin-top: 6;
+  }
+  .speed {
+    color: #f4f6ef;
+    font-size: 44;
+    font-weight: 700;
+  }
+  .unit {
+    color: #8da2a6;
+    font-size: 14;
+  }
+  .stats {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 8;
+    padding-top: 10;
+    border-color: #2f4650;
+    border-width: 1;
+  }
+  .stat {
+    flex-direction: column;
+    gap: 3;
+  }
+  .label {
+    color: #9eb0b0;
+    font-size: 11;
+    font-weight: 500;
+  }
+  .value {
+    color: #f2f4ee;
+    font-size: 17;
+    font-weight: 700;
+  }
+  .room {
+    color: #6fd2e0;
+    font-size: 12;
+    font-weight: 700;
+    margin-top: 10;
+  }
+  .message {
+    color: #d7e3dc;
+    font-size: 12;
+    margin-top: 4;
+  }
+</style>
+<Panel class="hud-root">
+  <div class="eyebrow">TRAIL RUSH · ALPINE LOOP</div>
+  <div class="speed-row">
+    <div id="speed" class="speed">0</div>
+    <div class="unit">KM/H</div>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="label">DISTANCE</div>
+      <div id="distance" class="value">0 m</div>
+    </div>
+    <div class="stat">
+      <div class="label">SCORE</div>
+      <div id="score" class="value">0</div>
+    </div>
+    <div class="stat">
+      <div class="label">BOOSTS</div>
+      <div id="boosts" class="value">0</div>
+    </div>
+  </div>
+  <div id="room" class="room">PRACTICE RIDE</div>
+  <div id="status" class="message">Move your hands to ride.</div>
+</Panel>
