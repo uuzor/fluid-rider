@@ -1,34 +1,24 @@
-# IWSDK Template for v0
+# Trail Rush VR
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![IWSDK](https://img.shields.io/badge/IWSDK-1.0.0-6f42c1.svg)](https://developers.meta.com/horizon/documentation/web/webxr-iwsdk-overview)
 [![Framework: Vite](https://img.shields.io/badge/Framework-Vite-646cff.svg)](https://vite.dev/)
 
-A WebXR starter built with the [Immersive Web SDK](https://developers.meta.com/horizon/documentation/web/webxr-iwsdk-overview)
-(IWSDK 1.0.0), packaged as a template for [v0](https://v0.app/) and deployable to
-Vercel as a static Vite app.
+A seated, hand-tracked alpine bike-racing game built with Meta's [Immersive Web
+SDK](https://developers.meta.com/horizon/documentation/web/webxr-iwsdk-overview)
+(IWSDK 1.0.0). Ride in a desktop browser or enter an emulated or physical XR
+session; deploy as a static Vite app on Vercel.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmeta-quest%2Fiwsdk-v0-template)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fuuzor%2Ffluid-rider)
 
 ## What's included
 
-- **A VR desk scene** — environment, robot, plant, a grabbable demo cube, a
-  spatial welcome panel and a controller-input HUD, composed declaratively in
-  `public/scenes/main.iwsdk.scene.json`.
-- **Controller mapping** — `ControllerInputSystem` maps the right A/B buttons to
-  scale, left X to cycle color and left Y to reset, and mirrors live button,
-  trigger, grip and thumbstick state onto the HUD panel.
-- **Manifest-first project layout** — `iwsdk.config.json` is the single authority
-  for the active scene, asset catalog, component catalog, XR mode and world
-  features.
-- **Hand and gaze tracking** — `iwsdk.config.json` requests the `handTracking`
-  and `gazeTracking` XR features and enables the `gaze` world feature, so both
-  are on in-session without any app code.
-- **XR emulation without a headset** — IWER lets any browser enter an emulated
-  Quest 3 session on the dev server, including the v0 sandbox preview. See
-  [XR emulation](#xr-emulation) for how it is gated.
-- **Agent guidance** for v0, Claude Code, Cursor and Copilot, synced from the
-  upstream IWSDK guidance in `facebook/immersive-web-sdk`.
+- **Alpine race course** — a looping first-person track, bike cockpit, collectible boost tokens, and rival riders.
+- **Hand-tracked riding** — push the right hand forward to accelerate, pull the left hand back to brake, and shift both hands sideways to steer.
+- **Arcade action** — collect boosts and fire pulses at nearby rivals; desktop preview buttons provide the same controls without a headset.
+- **Multiplayer rooms** — create or join a six-character room code, race with up to eight riders, and follow live positions on the leaderboard. Multiplayer uses Convex; practice mode remains playable when it is not configured.
+- **Manifest-first IWSDK setup** — `iwsdk.config.json` is the authority for the asset catalog, component catalog, XR mode, and world features.
+- **XR emulation without a headset** — IWER lets any browser enter an emulated Quest 3 session on the dev server, including the v0 sandbox preview. See [XR emulation](#xr-emulation) for how it is gated.
 
 ## Getting Started
 
@@ -39,10 +29,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) with your browser to see the
-result, then click **Enter XR** to start an emulated immersive session. You can
-start editing the scene by modifying `public/scenes/main.iwsdk.scene.json`, or
-the systems that drive it under `src/`. The page auto-updates as you edit.
+Open [http://localhost:5173](http://localhost:5173), choose **Start practice ride**, and use the on-screen controls. Select **Enter VR** to start an emulated immersive session. To race with friends, configure a Convex deployment and set `NEXT_PUBLIC_CONVEX_URL`; otherwise, room actions are unavailable and practice mode still works. The race world and gameplay systems live under `src/`, with reusable scene assets in `src/scene-assets/`.
 
 `npm run dev` is the IWSDK managed dev server (`iwsdk dev restart --foreground`),
 and the one script v0 starts on your behalf. It serves the app the way Vite does
@@ -87,30 +74,30 @@ npm run typecheck
 ## Project structure
 
 ```
-iwsdk.config.json                 project authority: scene, assets, components, world, dev
-vercel.json                       framework, output directory and SPA rewrite
+iwsdk.config.json                 IWSDK assets, components, XR mode, and world features
+index.html                        Lobby, desktop controls, race HUD, and XR entry point
 src/
-  index.ts                        World.create() + explicit system registration
-  assets.ts                       defineAssets() — catalog shared by runtime and editor
-  components.ts                   defineComponents() — catalog shared by runtime and editor
-  robot-component.ts              Robot tag component
-  robot.ts                        RobotSystem — look-at behavior and click audio
-  demo-cube-component.ts          DemoCube tag component and its color palette
-  input.ts                        ControllerInputSystem — face buttons and HUD mirroring
-  panel.ts                        PanelSystem — Enter XR / Exit to Browser wiring
-  scene-assets/                   *.scene-asset.ts — parentless Object3D prototypes
+  index.ts                        World creation and gameplay system registration
+  hand-ride.ts                    Hand tracking and riding controls
+  race-world.ts                   Course, cockpit, and rival setup
+  pickups.ts / combat.ts          Boost collection and pulse combat
+  lobby-ui.ts / race-hud.ts       Lobby, desktop controls, and HUD
+  multiplayer.ts / network-system.ts  Convex room sessions and rival synchronization
+  race-state.ts / race-components.ts   Shared game state and ECS components
+  assets.ts / scene-assets/       Shared asset manifest and procedural 3D assets
+convex/
+  schema.ts / race.ts             Realtime rooms, racers, and validated mutations
 public/
-  scenes/main.iwsdk.scene.json    composition only — manifest IDs, transforms, components
-  ui/*.uikitml                    runtime-loaded panels
-  gltf/ audio/ textures/          static assets
-scripts/
-  setup-browser-deps.mjs          predev — managed-browser system libs for the v0 sandbox
+  gltf/race-cyclist/model.glb     CC0 cyclist and bicycle model
+  ui/race-hud.uikitml             Runtime-loaded spatial HUD
+vercel.json                       Static Vite build and SPA routing
 ```
 
-Composition lives in JSON; geometry, materials and URLs live in TypeScript. Scene
-JSON references assets only by manifest ID.
+`iwsdk.config.json` remains the project authority. IWSDK systems assemble the
+race world from manifest-backed assets; reusable geometry and materials live in
+TypeScript scene assets.
 
-## Using this template in v0
+## Developing in v0
 
 Open the repository in [v0](https://v0.app/) and it runs in a Vercel Sandbox: a
 real Node.js VM with a framework-aware dev server, a terminal and Claude Code
@@ -120,8 +107,7 @@ WebXR requires. That script starts the managed dev server rather than bare Vite;
 it serves the app on the same port, and its `predev` hook prepares the sandbox
 for the managed browser the agent tooling drives.
 
-To point a fresh chat at your own copy, fork this repository and give v0 the fork
-URL. Agent guidance is already wired up: `AGENTS.md` at the root, path-scoped
+To open a new v0 chat against a copy, fork this repository and connect the fork. Agent guidance is already wired up: `AGENTS.md` at the root, path-scoped
 detail in `src/AGENTS.md`, `public/ui/AGENTS.md` and `public/scenes/AGENTS.md`,
 and skill procedures under `.claude/skills/` mirrored into `.agents/skills/`.
 
