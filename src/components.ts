@@ -17,5 +17,6 @@
 import { defineComponents } from '@iwsdk/core';
 import { DemoCube } from './demo-cube-component.js';
 import { Robot } from './robot-component.js';
+import { RacePickup, RaceRival, TrackSegment } from './race-components.js';
 
-export default defineComponents([Robot, DemoCube]);
+export default defineComponents([Robot, DemoCube, TrackSegment, RacePickup, RaceRival]);

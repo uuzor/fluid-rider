@@ -1,30 +1,43 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import { World } from '@iwsdk/core';
 import projectOptions from 'virtual:iwsdk-project';
-import { ControllerInputSystem } from './input.js';
-import { PanelSystem } from './panel.js';
-import { RobotSystem } from './robot.js';
+import { CombatSystem } from './combat.js';
+import { HandRideSystem } from './hand-ride.js';
+import { mountLobbyUi } from './lobby-ui.js';
+import { MultiplayerSession } from './multiplayer.js';
+import { NetworkSystem } from './network-system.js';
+import { PickupSystem } from './pickups.js';
+import { RaceHudSystem } from './race-hud.js';
+import { RaceState } from './race-state.js';
+import { RaceWorldSystem } from './race-world.js';
 
-World.create(
-  document.getElementById('scene-container') as HTMLDivElement,
-  projectOptions,
-).then((world) => {
-  world.registerSystem(RobotSystem);
-  world.registerSystem(PanelSystem);
-  world.registerSystem(ControllerInputSystem);
-});
+const raceState = new RaceState();
+const sceneContainer = document.getElementById('scene-container');
+
+if (!sceneContainer) {
+  throw new Error('The race scene container is missing.');
+}
+
+World.create(sceneContainer, projectOptions)
+  .then((world) => {
+    const multiplayer = new MultiplayerSession(raceState);
+    world.globals.raceState = raceState;
+    world.globals.multiplayer = multiplayer;
+    world.addCleanup(mountLobbyUi(raceState, multiplayer, world));
+    world.addCleanup(() => {
+      void multiplayer.close();
+    });
+
+    world.registerSystem(HandRideSystem);
+    world.registerSystem(RaceWorldSystem);
+    world.registerSystem(PickupSystem);
+    world.registerSystem(CombatSystem);
+    world.registerSystem(NetworkSystem);
+    world.registerSystem(RaceHudSystem);
+  })
+  .catch((error: unknown) => {
+    console.error('[Trail Rush] Could not start the IWSDK world:', error);
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = 'The 3D race could not start. Check the runtime console for details.';
+    }
+  });

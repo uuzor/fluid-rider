@@ -16,6 +16,10 @@
 
 import { AssetType, defineAssets } from '@iwsdk/core';
 import demoCube from './scene-assets/demo-cube.scene-asset.js';
+import raceCourse from './scene-assets/race-course.scene-asset.js';
+import boostToken from './scene-assets/boost-token.scene-asset.js';
+import bikeCockpit from './scene-assets/bike-cockpit.scene-asset.js';
+import pulseShot from './scene-assets/pulse-shot.scene-asset.js';
 
 // Build every public URL from BASE_URL so the runtime, the managed editor, and
 // subpath builds all resolve the same file.
@@ -58,4 +62,19 @@ export default defineAssets({
     name: 'Controller Input HUD',
   },
   'demo-cube': demoCube,
+  'race-course': raceCourse,
+  'boost-token': boostToken,
+  'bike-cockpit': bikeCockpit,
+  'pulse-shot': pulseShot,
+  'race-cyclist': {
+    url: publicAssetUrl('gltf/race-cyclist/model.glb'),
+    type: AssetType.GLTF,
+    name: 'CC0 voxel cyclist and bicycle',
+    priority: 'critical',
+  },
+  'race-hud': {
+    url: publicAssetUrl('ui/race-hud.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'Trail Rush race HUD',
+  },
 });
